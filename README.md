@@ -1,4 +1,4 @@
-Title: NBA Player Impact Analysis
+NBA Player Impact Analysis
 
 1. Project Overview
 
