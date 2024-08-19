@@ -2,23 +2,23 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
-# URL de la página que queremos scrapear
+# URL of the page to scrape
 url = "https://www.basketball-reference.com/leagues/NBA_2024_per_game.html"
 
-# Realizar la solicitud HTTP a la URL
+# Send HTTP request to the URL
 response = requests.get(url)
 
-# Analizar el contenido HTML de la página
+# Parse the HTML content of the page
 soup = BeautifulSoup(response.content, 'html.parser')
 
-# Encontrar la tabla con las estadísticas de los jugadores
+# Find the table with player statistics
 table = soup.find('table', {'id': 'per_game_stats'})
 
-# Leer la tabla en un DataFrame de pandas
+# Read the table into a pandas DataFrame
 df = pd.read_html(str(table))[0]
 
-# Mostrar las primeras filas del DataFrame
+# Display the first few rows of the DataFrame
 print(df.head())
 
-# Guardar el DataFrame en un archivo CSV
+# Save the DataFrame to a CSV file
 df.to_csv('nba_player_stats_2024.csv', index=False)

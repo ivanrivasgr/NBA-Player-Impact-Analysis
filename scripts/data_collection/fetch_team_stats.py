@@ -2,7 +2,7 @@ from nba_api.stats.endpoints import teamyearbyyearstats, teamgamelog
 import pandas as pd
 import os
 
-# IDs de los equipos
+# Team IDs
 teams = {
     "Milwaukee Bucks": 1610612749,
     "Philadelphia 76ers": 1610612755,
@@ -10,7 +10,7 @@ teams = {
     "Los Angeles Lakers": 1610612747
 }
 
-# Temporadas de interés
+# Seasons of interest
 seasons = ['2018-19', '2019-20', '2020-21', '2021-22', '2022-23']
 
 all_team_data = []
@@ -26,7 +26,7 @@ for team_name, team_id in teams.items():
         losses = row['LOSSES']
         conf_rank = row['CONF_RANK']
 
-        # Obtener el historial de juegos para la temporada actual
+        # Get game logs for the current season
         game_log = teamgamelog.TeamGameLog(
             team_id=team_id, season=season).get_data_frames()[0]
         playoff_games = game_log[game_log['MATCHUP'].str.contains(
@@ -43,16 +43,11 @@ for team_name, team_id in teams.items():
             "playoff_results": playoff_results[['GAME_DATE', 'MATCHUP', 'WL', 'PTS', 'REB', 'AST']].to_dict('records') if not playoff_results.empty else "No playoffs data"
         })
 
-# Obtener la ruta absoluta del directorio actual
+# Save data to a JSON file
 current_dir = os.path.dirname(os.path.abspath(__file__))
-
-# Definir la ruta para guardar el archivo
 data_path = os.path.join(current_dir, '../../data/raw/team_stats.json')
-
-# Asegurarse de que la carpeta 'data/raw/' exista
 os.makedirs(os.path.dirname(data_path), exist_ok=True)
 
-# Guardar los datos en un archivo JSON
 with open(data_path, 'w') as f:
     pd.DataFrame(all_team_data).to_json(f, orient='records', indent=4)
 
